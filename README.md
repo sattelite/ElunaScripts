@@ -13,7 +13,6 @@ for review and possible acceptance into the repo.
 As filenames please use
 * lowercase snake\_case
 * boss\_ prefix for boss scripts
-* zone\_ prefix for zone scripts
 
 In the LUA files use:
 * 4 Spaces indention
