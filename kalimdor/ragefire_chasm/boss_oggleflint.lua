@@ -9,7 +9,7 @@
     * Npc: Oggleflint <11517>
 --]]
 
-local BOSS_OFFLEFLINT = 11517
+local BOSS_OGGLEFLINT = 11517
 local SPELL_CLEAVE = 40505
 
 function OnEnterCombat(event, creature, target)
@@ -26,6 +26,6 @@ function Reset(event, creature)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(BOSS_OFFLEFLINT, 1, OnEnterCombat) -- OnEnterCombat
-RegisterCreatureEvent(BOSS_OFFLEFLINT, 2, Reset) -- OnLeaveCombat
-RegisterCreatureEvent(BOSS_OFFLEFLINT, 4, Reset) -- OnDied
+RegisterCreatureEvent(BOSS_OGGLEFLINT, 1, OnEnterCombat) -- OnEnterCombat
+RegisterCreatureEvent(BOSS_OGGLEFLINT, 2, Reset) -- OnLeaveCombat
+RegisterCreatureEvent(BOSS_OGGLEFLINT, 4, Reset) -- OnDied

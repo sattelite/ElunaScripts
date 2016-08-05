@@ -7,7 +7,7 @@ local function OnQuestAccept(event, player, creature, quest)
     end
 end
 
-local function OnQuestReward(event, player, creature, quest) // Same effect as OnQuestComplete
+local function OnQuestReward(event, player, creature, quest) -- Same effect as OnQuestComplete
     if (quest:GetId() == QuestId) then
         creature:SendUnitSay("You have completed a quest!", 0)
     end

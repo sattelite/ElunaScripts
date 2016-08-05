@@ -80,7 +80,7 @@ function OnJustSummoned(event, creature, summoned)
 end
 
 function Move(event, delay, pCall, creature)
-    for k,_ in ipairs(waypoints) do
+    for k in pairs(waypoints) do
         if (waypoints[k][1] == currentWP) then
             creature:MoveTo(waypoints[k][2], waypoints[k][3], waypoints[k][4], waypoints[k][5])
         end
