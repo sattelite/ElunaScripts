@@ -8,6 +8,18 @@ Feel free to use anything within this repo as you please, and commit your own sc
 for review and possible acceptance into the repo.
 
 
+## Coding Style
+
+As filenames please use
+* lowercase snake\_case
+* boss\_ prefix for boss scripts
+* zone\_ prefix for zone scripts
+
+In the LUA files use:
+* 4 Spaces indention
+* camelCase for variable names
+* PascalCase for function names
+
 ## Links
 
 [Eluna Source](https://github.com/ElunaLuaEngine/Eluna)
