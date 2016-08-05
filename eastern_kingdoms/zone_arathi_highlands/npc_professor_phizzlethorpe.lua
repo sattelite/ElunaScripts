@@ -48,7 +48,7 @@ function OnReachWP(event, creature, pointType, waypointId)
         delay = 1000
     elseif (currentWP == 2) then
         creature:SendCreatureTalk(1, escortPlayer:GetGUIDLow())
-        creature:RegisterEvent(OnMoveForward, 3500, 1)
+        creature:RegisterEvent(MoveForward, 3500, 1)
     elseif (currentWP == 3) then
         creature:SendCreatureTalk(3, 0)
         creature:RegisterEvent(Summon, 8000, 1)

@@ -1,3 +1,7 @@
+-- script disabled
+do return end
+
+
 local npcId = 123
 
 local function CastFrostbolt(eventId, dely, calls, creature)

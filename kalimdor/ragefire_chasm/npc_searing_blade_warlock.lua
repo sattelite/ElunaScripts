@@ -19,11 +19,13 @@ end
 
 function CastShadowBolt(event, delay, pCall, creature)
     creature:CastSpell(creature:GetVictim(), SPELL_SHADOWBOLT)
-    creature:RegisterEvent(CastShadowBolt, 3000, 0)
+    creature:RegisterEvent(CastShadowBolt, math.random(3300,4900), 1)
 end
 
 function CastSummonVoidwalker(event, creature)
-    creature:CastSpell(creature, SPELL_SUMMON_VOIDWALKER, true)
+    creature:RegisterEvent(function(event, delay, pCall, creature) 
+        creature:CastSpell(creature, SPELL_SUMMON_VOIDWALKER, true)
+    end, 1000, 1)
 end
 
 function Reset(event, creature)

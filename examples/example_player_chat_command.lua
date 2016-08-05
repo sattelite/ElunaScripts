@@ -1,3 +1,7 @@
+-- script disabled
+do return end
+
+
 local ChatPrefix = "#example"
 
 local function ChatSystem(event, player, msg, _, lang)

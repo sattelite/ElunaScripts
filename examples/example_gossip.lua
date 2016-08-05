@@ -1,3 +1,7 @@
+-- script disabled
+do return end
+
+
 local GobId = 123
 local NpcId = 123
 local ItemId = 123 -- Item needs to have spell on use

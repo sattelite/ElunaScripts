@@ -1,3 +1,7 @@
+-- script disabled
+do return end
+
+
 local NpcId = 123
 local QuestId = 123
 

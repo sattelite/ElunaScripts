@@ -14,20 +14,20 @@ local SPELL_POISON = 744
 local SPELL_SINISTER_STRIKE = 14873
 
 function OnEnterCombat(event, creature, target)
-    creature:RegisterEvent(CastPoison, math.random(3000, 5000), 0)
-    creature:RegisterEvent(CastSinisterStrike, 8000, 0)
-end
+    -- cast spell poison
+    creature:RegisterEvent(function (event, delay, pCall, creature)
+        creature:SendUnitSay("Time: " .. os.time(), 0)
+        if (math.random(1, 100) <= 75) then
+            creature:CastSpell(creature:GetVictim(), SPELL_POISON)
+        end
+    end, math.random(1000, 10000), 0)
 
-function CastPoison(event, delay, pCall, creature)
-    if (math.random(1, 100) <= 75) then
-        creature:CastSpell(creature:GetVictim(), SPELL_POISON)
-    end
-end
-
-function CastSinisterStrike(event, delay, pCall, creature)
-    if (math.random(1, 100) <= 85) then
-        creature:CastSpell(creature:GetVictim(), SPELL_SINISTER_STRIKE)
-    end
+    -- cast sinister strike
+    creature:RegisterEvent(function(event, delay, pCall, creature)
+        if (math.random(1, 100) <= 85) then
+            creature:CastSpell(creature:GetVictim(), SPELL_SINISTER_STRIKE)
+        end
+    end, 8000, 0)
 end
 
 function Reset(event, creature)

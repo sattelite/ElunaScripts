@@ -1,3 +1,7 @@
+-- script disabled
+do return end
+
+
 local function OnEvents(event, player, msg, Type, lang)
     if (msg == "asd") then
         print "asd"
