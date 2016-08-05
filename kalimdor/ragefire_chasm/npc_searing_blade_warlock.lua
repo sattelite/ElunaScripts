@@ -14,14 +14,15 @@ local SPELL_SUMMON_VOIDWALKER = 12746
 local SPELL_SHADOWBOLT = 20791
 
 function OnEnterCombat(event, creature, target)
-    creature:RegisterEvent(CastShadowBolt, 3000, 0)
+    creature:RegisterEvent(CastShadowBolt, 0, 1)
 end
 
 function CastShadowBolt(event, delay, pCall, creature)
     creature:CastSpell(creature:GetVictim(), SPELL_SHADOWBOLT)
+    creature:RegisterEvent(CastShadowBolt, 3000, 0)
 end
 
-function OnReachHome(event, creature)
+function CastSummonVoidwalker(event, creature)
     creature:CastSpell(creature, SPELL_SUMMON_VOIDWALKER, true)
 end
 
@@ -32,4 +33,5 @@ end
 RegisterCreatureEvent(NPC_SEARING_BLADE_WARLOCK, 1, OnEnterCombat) -- OnEnterCombat
 RegisterCreatureEvent(NPC_SEARING_BLADE_WARLOCK, 2, Reset) -- OnLeaveCombat
 RegisterCreatureEvent(NPC_SEARING_BLADE_WARLOCK, 4, Reset) -- OnDied
-RegisterCreatureEvent(NPC_SEARING_BLADE_WARLOCK, 24, OnReachHome) -- OnReachHome
+RegisterCreatureEvent(NPC_SEARING_BLADE_WARLOCK, 5, CastSummonVoidwalker) -- OnReachHome
+RegisterCreatureEvent(NPC_SEARING_BLADE_WARLOCK, 24, CastSummonVoidwalker) -- OnReachHome
