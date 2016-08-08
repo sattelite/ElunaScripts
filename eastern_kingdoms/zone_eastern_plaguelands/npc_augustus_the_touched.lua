@@ -10,10 +10,16 @@
     * Script Type: Quest
     * Npc: Augustus the Touched <12384>
 --]]
+require("eluna_globals")
 
+-- variable definitions
 local NPC_AUGUSTUS_THE_TOUCHED = 12384
 
-function OnGossipHello(event, player, creature)
+-- function definitions
+local function GossipHello() end
+local function GossipSelect() end
+
+GossipHello = function (event, player, creature)
     if (creature:IsQuestGiver()) then
         player:GossipAddQuests(creature)
     end
@@ -24,12 +30,12 @@ function OnGossipHello(event, player, creature)
     player:GossipSendMenu(player:GetGossipTextId(creature), creature)
 end
 
-function OnGossipSelect(event, player, creature, sender, intid, code)
+GossipSelect = function (event, player, creature, sender, intid, code)
     player:GossipClearMenu()
     if (intid == 1) then
         player:SendListInventory(creature)
     end
 end
 
-RegisterCreatureGossipEvent(NPC_AUGUSTUS_THE_TOUCHED, 1, OnGossipHello)
-RegisterCreatureGossipEvent(NPC_AUGUSTUS_THE_TOUCHED, 2, OnGossipSelect)
+RegisterCreatureGossipEvent(NPC_AUGUSTUS_THE_TOUCHED, GOSSIP_EVENT_ON_HELLO, GossipHello)
+RegisterCreatureGossipEvent(NPC_AUGUSTUS_THE_TOUCHED, GOSSIP_EVENT_ON_SELECT, GossipSelect)

@@ -10,10 +10,11 @@
     * Script Type: Gossip, CreatureAI and Quest
     * Npc: Infused Crystal <16364>
 --]]
+require("eluna_globals")
 
+-- variable definitions
 local NPC_INFUSED_CRYSTAL = 16364
 local NPC_ENRAGED_WRAITH = 17086
-
 local Spawns =
 {
     { 8270.68, -7188.53, 139.619 },
@@ -25,12 +26,19 @@ local Spawns =
     { 8278.51, -7242.13, 139.162 },
     { 8267.97, -7239.17, 139.517 }
 }
-
 local completed = false
 local started = false
 local playerGUID = 0
 
-function OnDied(event, creature, killer)
+-- function definitions
+local function Died() end
+local function Reset() end
+local function OnMoveLOS() end
+local function WaveStart() end
+local function Complete() end
+local function Summoned() end
+
+Died = function (event, creature, killer)
     creature:RemoveEvents()
     if (playerGUID > 0 and not completed) then
         local player = GetPlayerByGUID(playerGUID)
@@ -40,13 +48,13 @@ function OnDied(event, creature, killer)
     end
 end
 
-function OnReset(event, creature)
+Reset = function (event, creature)
     playerGUID = 0
     started = false
     completed = false
 end
 
-function OnMoveLOS(event, creature, unit)
+OnMoveLOS = function (event, creature, unit)
     if (unit:GetUnitType() == "Player" and creature:IsWithinDistInMap(unit, 10) and not started) then
         if (unit:GetQuestStatus(8490) == 3) then
             playerGUID = unit:GetGUIDLow()
@@ -57,7 +65,7 @@ function OnMoveLOS(event, creature, unit)
     end
 end
 
-function WaveStart(event, delay, pCall, creature)
+WaveStart = function (event, delay, pCall, creature)
     if (started and not completed) then
         local rand1 = math.random(8)
         local rand2 = math.random(8)
@@ -69,7 +77,7 @@ function WaveStart(event, delay, pCall, creature)
     end
 end
 
-function Complete(event, delay, pCall, creature)
+Complete = function (event, delay, pCall, creature)
     if (started) then
         creature:RemoveEvents()
         creature:SendCreatureTalk(0, playerGUID)
@@ -85,14 +93,14 @@ function Complete(event, delay, pCall, creature)
     end
 end
 
-function OnSummoned(event, creature, summoned)
+Summoned = function (event, creature, summoned)
     local player = GetPlayerByGUID(playerGUID)
     if (player ~= nil) then
         summoned:AttackStart(player)
     end
 end
 
-RegisterCreatureEvent(NPC_INFUSED_CRYSTAL, 4, OnDied)
-RegisterCreatureEvent(NPC_INFUSED_CRYSTAL, 19, OnSummoned)
-RegisterCreatureEvent(NPC_INFUSED_CRYSTAL, 23, OnReset)
-RegisterCreatureEvent(NPC_INFUSED_CRYSTAL, 27, OnMoveLOS)
+RegisterCreatureEvent(NPC_INFUSED_CRYSTAL, CREATURE_EVENT_ON_DIED, Died)
+RegisterCreatureEvent(NPC_INFUSED_CRYSTAL, CREATURE_EVENT_ON_JUST_SUMMONED_CREATURE, Summoned)
+RegisterCreatureEvent(NPC_INFUSED_CRYSTAL, CREATURE_EVENT_ON_RESET, Reset)
+RegisterCreatureEvent(NPC_INFUSED_CRYSTAL, CREATURE_EVENT_ON_MOVE_IN_LOS, OnMoveLOS)

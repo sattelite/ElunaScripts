@@ -10,9 +10,10 @@
     * Script Type: Quest Escort
     * Npc: Professor Phizzlethorpe <2768>
 --]]
+require("eluna_globals")
 
+-- variable definitions
 local NPC_PROFESSOR_PHIZZLETHORPE = 2768
-
 local waypoints =
 {
     { 1, 1, -2073.519, -2123.502, 18.433033 },
@@ -21,11 +22,21 @@ local waypoints =
     { 6, 7, -2074.940, -2089.247, 8.911692 },
     { 8, 8, -2066.248, -2086.332, 9.009366 }
 }
-
 local escortPlayer = nil
 local currentWP = 0
 
-function OnQuestAccept(event, player, creature, quest)
+-- function definitions
+local function OnQuestAccept() end
+local function EnterCombat() end
+local function WaypointReached() end
+local function JustSummoned() end
+local function Move() end
+local function MoveForward() end
+local function Summon() end
+local function AlmostDone() end
+local function Finish() end
+
+OnQuestAccept = function (event, player, creature, quest)
     if (quest:GetId() == 665) then
         escortPlayer = player
         currentWP = 0
@@ -36,11 +47,11 @@ function OnQuestAccept(event, player, creature, quest)
     end
 end
 
-function OnEnterCombat(event, creature, target)
+EnterCombat = function (event, creature, target)
     creature:SendCreatureTalk(4, 0)
 end
 
-function OnReachWP(event, creature, pointType, waypointId)
+WaypointReached = function (event, creature, pointType, waypointId)
     currentWP = waypointId + 1
     local delay = 0
 
@@ -75,11 +86,11 @@ function OnReachWP(event, creature, pointType, waypointId)
     end
 end
 
-function OnJustSummoned(event, creature, summoned)
+JustSummoned = function (event, creature, summoned)
     summoned:AttackStart(escortPlayer)
 end
 
-function Move(event, delay, pCall, creature)
+Move = function (event, delay, pCall, creature)
     for k in pairs(waypoints) do
         if (waypoints[k][1] == currentWP) then
             creature:MoveTo(waypoints[k][2], waypoints[k][3], waypoints[k][4], waypoints[k][5])
@@ -87,27 +98,27 @@ function Move(event, delay, pCall, creature)
     end
 end
 
-function MoveForward(event, delay, pCall, creature)
+MoveForward = function (event, delay, pCall, creature)
     creature:SendCreatureTalk(2, escortPlayer:GetGUIDLow())
     creature:MoveTo(currentWP, -2043.243, -2154.018, 20.232119)
 end
 
-function Summon(event, delay, pCall, creature)
+Summon = function (event, delay, pCall, creature)
     creature:SpawnCreature(2776, -2052.96, -2142.49, 20.15, 1.0, 5, 0)
     creature:SpawnCreature(2776, -2052.96, -2142.49, 20.15, 1.0, 5, 0)
 end
 
-function AlmostDone(event, delay, pCall, creature)
+AlmostDone = function (event, delay, pCall, creature)
     creature:SendCreatureTalk(5, escortPlayer:GetGUIDLow())
 end
 
-function Finish(event, delay, pCall, creature)
+Finish = function (event, delay, pCall, creature)
     creature:SendCreatureTalk(6, escortPlayer:GetGUIDLow())
     creature:SetWalk(false)
     creature:MoveTo(currentWP, -2070.117, -2126.960, 19.514397)
 end
 
-RegisterCreatureEvent(NPC_PROFESSOR_PHIZZLETHORPE, 1, OnEnterCombat)
-RegisterCreatureEvent(NPC_PROFESSOR_PHIZZLETHORPE, 6, OnReachWP)
-RegisterCreatureEvent(NPC_PROFESSOR_PHIZZLETHORPE, 19, OnJustSummoned)
-RegisterCreatureEvent(NPC_PROFESSOR_PHIZZLETHORPE, 31, OnQuestAccept)
+RegisterCreatureEvent(NPC_PROFESSOR_PHIZZLETHORPE, CREATURE_EVENT_ON_ENTER_COMBAT,  EnterCombat)
+RegisterCreatureEvent(NPC_PROFESSOR_PHIZZLETHORPE, CREATURE_EVENT_ON_REACH_WP,  WaypointReached)
+RegisterCreatureEvent(NPC_PROFESSOR_PHIZZLETHORPE, CREATURE_EVENT_ON_JUST_SUMMONED_CREATURE, JustSummoned)
+RegisterCreatureEvent(NPC_PROFESSOR_PHIZZLETHORPE, CREATURE_EVENT_ON_QUEST_ACCEPT, OnQuestAccept)

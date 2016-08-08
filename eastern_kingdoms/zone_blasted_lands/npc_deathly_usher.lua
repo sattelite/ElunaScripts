@@ -10,25 +10,32 @@
     * Script Type: Quest Gossip
     * Npc: Deathly Usher <8816>
 --]]
+require("eluna_globals")
 
+-- variable definitions
 local NPC_DEATHLY_USHER = 8816
 local ITEM_WARD_OF_THE_DEFILER = 10757
 local SPELL_TELEPORT_TO_RAZELIKH = 12885
 
-function OnGossipHello(event, player, creature)
+-- function definitions
+local function GossipHello() end 
+local function GossipSelect() end 
+
+GossipHello = function (event, player, creature)
     if (player:GetQuestStatus(3628) == 3 and player:HasItem(ITEM_WARD_OF_THE_DEFILER)) then
         player:GossipMenuAddItem(0, "I wish to visit the Rise of the Defiler.", 0, 1)
     end
     player:GossipSendMenu(player:GetGossipTextId(creature), creature)
 end
 
-function OnGossipSelect(event, player, creature, sender, intid, code)
+GossipSelect = function (event, player, creature, sender, intid, code)
     player:GossipClearMenu()
     if (intid == 1) then
         player:GossipComplete()
+        -- cast teleport to razelikh -- channeled
         creature:CastSpell(player, SPELL_TELEPORT_TO_RAZELIKH, true)
     end
 end
 
-RegisterCreatureGossipEvent(NPC_DEATHLY_USHER, 1, OnGossipHello)
-RegisterCreatureGossipEvent(NPC_DEATHLY_USHER, 2, OnGossipSelect)
+RegisterCreatureGossipEvent(NPC_DEATHLY_USHER, GOSSIP_EVENT_ON_HELLO, GossipHello)
+RegisterCreatureGossipEvent(NPC_DEATHLY_USHER, GOSSIP_EVENT_ON_SELECT, GossipSelect)

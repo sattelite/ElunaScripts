@@ -10,11 +10,12 @@
     * Script Type: Quest Gossip
     * Npc: Ragged John <9563>
 --]]
+require("eluna_globals")
 
+-- variable definitions
 local NPC_RAGGED_JOHN = 9563
 local SPELL_MOTHERS_MILK = 16468
 local SPELL_WICKED_MILKING = 16472
-
 local Gossip =
 {
     { 1, 2, "So what did you do?", 2714 },
@@ -30,7 +31,12 @@ local Gossip =
     { 11, 12,  "Thanks, Ragged John. Your story was very uplifting and informative", 2725 }
 }
 
-function OnGossipHello(event, player, creature)
+-- function definitions
+local function GossipHello() end 
+local function GossipSelect() end 
+local function OnMoveInLOS() end 
+
+GossipHello = function (event, player, creature)
     if (creature:IsQuestGiver()) then
         player:GossipAddQuests(creature)
     end
@@ -41,7 +47,7 @@ function OnGossipHello(event, player, creature)
     player:GossipSendMenu(2713, creature)
 end
 
-function OnGossipSelect(event, player, creature, sender, intid, code)
+GossipSelect = function (event, player, creature, sender, intid, code)
     player:GossipClearMenu()
     if (intid == 12) then
         player:GossipComplete()
@@ -55,7 +61,7 @@ function OnGossipSelect(event, player, creature, sender, intid, code)
     end
 end
 
-function OnMoveInLOS(event, creature, unit)
+OnMoveInLOS = function (event, creature, unit)
     if (unit:HasAura(SPELL_MOTHERS_MILK)) then
         if (unit:GetUnitType() == "Player" and creature:IsWithinDistInMap(unit, 15) and unit:IsInAccessiblePlaceFor(creature)) then
             creature:CastSpell(unit, SPELL_WICKED_MILKING)
@@ -64,6 +70,6 @@ function OnMoveInLOS(event, creature, unit)
     end
 end
 
-RegisterCreatureGossipEvent(NPC_RAGGED_JOHN, 1, OnGossipHello)
-RegisterCreatureGossipEvent(NPC_RAGGED_JOHN, 2, OnGossipSelect)
-RegisterCreatureEvent(NPC_RAGGED_JOHN, 27, OnMoveInLOS)
+RegisterCreatureGossipEvent(NPC_RAGGED_JOHN, GOSSIP_EVENT_ON_HELLO, GossipHello)
+RegisterCreatureGossipEvent(NPC_RAGGED_JOHN, GOSSIP_EVENT_ON_SELECT, GossipSelect)
+RegisterCreatureEvent(NPC_RAGGED_JOHN, CREATURE_EVENT_ON_MOVE_IN_LOS, OnMoveInLOS)

@@ -11,16 +11,24 @@
     * Script Type: AreaTrigger & Boss Fight
     * Npc: Twilight Corrupter <15625>
 --]]
+require("eluna_globals")
 
+-- variable definitions
 local NPC_TWILIGHT_CORRUPTER = 15625
 local SPELL_LEVEL_UP = 24312
 local SPELL_CORRUPTION = 25805
 local SPELL_CREATURE_OF_NIGHTMARE = 25806
-
 local killCount = 0
 local corrupter = nil
 
-function OnTrigger(event, player, triggerId)
+-- function definitions
+local function Trigger() end
+local function EnterCombat() end
+local function Reset() end
+local function Died() end
+local function CastSoulCorruption() end
+
+Trigger = function (event, player, triggerId)
     if (triggerId == 4017 and player:HasQuestForItem(21149) and corrupter == nil) then
         corrupter = player:SpawnCreature(NPC_TWILIGHT_CORRUPTER, -10328.16, -489.57, 49.95, 0, 1, 60000)
         if (corrupter ~= nil) then
@@ -31,17 +39,15 @@ function OnTrigger(event, player, triggerId)
     end
 end
 
-function Reset(event, creature)
-    creature:RemoveEvents()
-    killCount = 0
+
+EnterCombat = function (event, creature, target)
+    creature:RegisterEvent(CastSoulCorruption, math.random(15000, 19000), 1)
+    creature:RegisterEvent(function (event, delay, pCall, creature)
+        creature:CastSpell(creature:GetVictim(), SPELL_CREATURE_OF_NIGHTMARE)
+    end, 45000, 0)
 end
 
-function OnEnterCombat(event, creature, target)
-    creature:RegisterEvent(CastSoulCorruption, math.random(4000) + 15000, 0)
-    creature:RegisterEvent(CastCreatureOfNightmare, 45000, 0)
-end
-
-function OnKilledUnit(event, creature, victim)
+KilledUnit = function (event, creature, victim)
     if (victim:GetUnitType() == "Player") then
         killCount = killCount + 1
         creature:SendCreatureTalk(2, victim:GetGUID())
@@ -52,21 +58,23 @@ function OnKilledUnit(event, creature, victim)
     end
 end
 
-function OnDied(event, creature, killer)
+CastSoulCorruption = function (event, delay, pCall, creature)
+    creature:CastSpell(creature:GetVictim(), SPELL_CORRUPTION)
+    creature:RegisterEvent(CastSoulCorruption, math.random(15000, 19000), 1)
+end
+
+Died = function (event, creature, killer)
     creature:RemoveEvents()
     corrupter = nil
 end
 
-function CastSoulCorruption(event, delay, pCall, creature)
-    creature:CastSpell(creature:GetVictim(), SPELL_CORRUPTION)
+Reset = function (event, creature)
+    creature:RemoveEvents()
+    killCount = 0
 end
 
-function CastCreatureOfNightmare(event, delay, pCall, creature)
-    creature:CastSpell(creature:GetVictim(), SPELL_CREATURE_OF_NIGHTMARE)
-end
-
-RegisterServerEvent(24, OnTrigger)
-RegisterCreatureEvent(NPC_TWILIGHT_CORRUPTER, 1, OnEnterCombat)
-RegisterCreatureEvent(NPC_TWILIGHT_CORRUPTER, 3, OnKilledUnit)
-RegisterCreatureEvent(NPC_TWILIGHT_CORRUPTER, 4, OnDied)
-RegisterCreatureEvent(NPC_TWILIGHT_CORRUPTER, 23, Reset)
+RegisterServerEvent(TRIGGER_EVENT_ON_TRIGGER, Trigger)
+RegisterCreatureEvent(NPC_TWILIGHT_CORRUPTER, CREATURE_EVENT_ON_ENTER_COMBAT, EnterCombat)
+RegisterCreatureEvent(NPC_TWILIGHT_CORRUPTER, CREATURE_EVENT_ON_TARGET_DIED, KilledUnit)
+RegisterCreatureEvent(NPC_TWILIGHT_CORRUPTER, CREATURE_EVENT_ON_DIED, Died)
+RegisterCreatureEvent(NPC_TWILIGHT_CORRUPTER, CREATURE_EVENT_ON_RESET, Reset)
