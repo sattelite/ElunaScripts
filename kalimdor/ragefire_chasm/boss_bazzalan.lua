@@ -8,32 +8,41 @@
     * Script Type: Boss Fight
     * Npc: Bazzalan <11519>
 --]]
+require("eluna_globals")
 
+-- variable definitions
 local BOSS_BAZZALAN = 11519
 local SPELL_POISON = 744
 local SPELL_SINISTER_STRIKE = 14873
 
-function OnEnterCombat(event, creature, target)
-    -- cast spell poison
-    creature:RegisterEvent(function (event, delay, pCall, creature)
-        creature:SendUnitSay("Time: " .. os.time(), 0)
-        if (math.random(1, 100) <= 75) then
-            creature:CastSpell(creature:GetVictim(), SPELL_POISON)
-        end
-    end, math.random(1000, 10000), 0)
+-- function definitions
+local function EnterCombat() end
+local function CastPoison() end
+local function Reset() end
+
+EnterCombat = function(event, creature, target)
+    -- cast poison
+    creature:RegisterEvent(CastPoison, math.random(3000, 5000), 1)
 
     -- cast sinister strike
-    creature:RegisterEvent(function(event, delay, pCall, creature)
+    creature:RegisterEvent( function(event, delay, pCall, creature)
         if (math.random(1, 100) <= 85) then
             creature:CastSpell(creature:GetVictim(), SPELL_SINISTER_STRIKE)
         end
     end, 8000, 0)
 end
 
-function Reset(event, creature)
+CastPoison = function( event, delay, pCall, creature) 
+    if (math.random(1, 100) <= 75) then
+        creature:CastSpell(creature:GetVictim(), SPELL_POISON)
+    end
+    creature:RegisterEvent(CastPoison, math.random(3000,5000), 1)
+end
+
+Reset = function (event, creature)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(BOSS_BAZZALAN, 1, OnEnterCombat) -- OnEnterCombat
-RegisterCreatureEvent(BOSS_BAZZALAN, 2, Reset) -- OnLeaveCombat
-RegisterCreatureEvent(BOSS_BAZZALAN, 4, Reset) -- OnDied
+RegisterCreatureEvent(BOSS_BAZZALAN, CREATURE_EVENT_ON_ENTER_COMBAT, EnterCombat)
+RegisterCreatureEvent(BOSS_BAZZALAN, CREATURE_EVENT_ON_LEAVE_COMBAT, Reset)
+RegisterCreatureEvent(BOSS_BAZZALAN, CREATURE_EVENT_ON_DIED, Reset)

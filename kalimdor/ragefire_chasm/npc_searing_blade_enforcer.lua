@@ -8,24 +8,29 @@
     * Script Type: Trash Mob
     * Npc: Searing Blade Enforcer <11323>
 --]]
+require("eluna_globals")
 
+-- variable definitions
 local NPC_SEARING_BLADE_ENFORCER = 11323
 local SPELL_SHIELD_SLAM = 8242
 
-function OnEnterCombat(event, creature, target)
-    creature:RegisterEvent(CastShieldSlam, 8000, 0)
+-- function definitions
+local function EnterCombat() end 
+local function Reset() end 
+
+EnterCombat = function (event, creature, target)
+    -- cast shield slam
+    creature:RegisterEvent(function (event, delay, pCall, creature)
+        if (math.random(1, 100) <= 75) then
+            creature:CastSpell(creature:GetVictim(), SPELL_SHIELD_SLAM)
+        end
+    end, 8000, 0)
 end
 
-function CastShieldSlam(event, delay, pCall, creature)
-    if (math.random(1, 100) <= 75) then
-        creature:CastSpell(creature:GetVictim(), SPELL_SHIELD_SLAM)
-    end
-end
-
-function Reset(event, creature)
+Reset = function (event, creature)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(NPC_SEARING_BLADE_ENFORCER, 1, OnEnterCombat) -- OnEnterCombat
-RegisterCreatureEvent(NPC_SEARING_BLADE_ENFORCER, 2, Reset) -- OnLeaveCombat
-RegisterCreatureEvent(NPC_SEARING_BLADE_ENFORCER, 4, Reset) -- OnDied
+RegisterCreatureEvent(NPC_SEARING_BLADE_ENFORCER, CREATURE_EVENT_ON_ENTER_COMBAT, EnterCombat)
+RegisterCreatureEvent(NPC_SEARING_BLADE_ENFORCER, CREATURE_EVENT_ON_LEAVE_COMBAT, Reset)
+RegisterCreatureEvent(NPC_SEARING_BLADE_ENFORCER, CREATURE_EVENT_ON_DIED, Reset)

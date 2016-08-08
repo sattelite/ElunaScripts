@@ -8,24 +8,29 @@
     * Script Type: Boss Fight
     * Npc: Oggleflint <11517>
 --]]
+require("eluna_globals")
 
+-- variable definitions
 local BOSS_OGGLEFLINT = 11517
 local SPELL_CLEAVE = 40505
 
-function OnEnterCombat(event, creature, target)
-    creature:RegisterEvent(CastCleave, 8000, 0)
+-- function definitions
+local function EnterCombat() end
+local function Reset() end
+
+EnterCombat = function(event, creature, target)
+    -- cast cleave
+    creature:RegisterEvent(function(event, delay, pCall, creature)
+        if (math.random(1, 100) <= 70) then
+            creature:CastSpell(creature:GetVictim(), SPELL_CLEAVE)
+        end
+    end, 8000, 0)
 end
 
-function CastCleave(event, delay, pCall, creature)
-    if (math.random(1, 100) <= 70) then
-        creature:CastSpell(creature:GetVictim(), SPELL_CLEAVE)
-    end
-end
-
-function Reset(event, creature)
+Reset = function (event, creature)
     creature:RemoveEvents()
 end
 
-RegisterCreatureEvent(BOSS_OGGLEFLINT, 1, OnEnterCombat) -- OnEnterCombat
-RegisterCreatureEvent(BOSS_OGGLEFLINT, 2, Reset) -- OnLeaveCombat
-RegisterCreatureEvent(BOSS_OGGLEFLINT, 4, Reset) -- OnDied
+RegisterCreatureEvent(BOSS_OGGLEFLINT, CREATURE_EVENT_ON_ENTER_COMBAT, EnterCombat)
+RegisterCreatureEvent(BOSS_OGGLEFLINT, CREATURE_EVENT_ON_LEAVE_COMBAT, Reset)
+RegisterCreatureEvent(BOSS_OGGLEFLINT, CREATURE_EVENT_ON_DIED, Reset)
