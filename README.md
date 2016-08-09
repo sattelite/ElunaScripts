@@ -2,10 +2,10 @@
 
 ## Content
 
-This repo contains example scripts and general releases for Eluna. 
+This repo is a fork of the [official Eluna repo](https://github.com/ElunaLuaEngine/Scripts) and contains refactored scripts for Eluna. The changes will be submitted to the [official Eluna repo](https://github.com/ElunaLuaEngine/Scripts) whenever they seem to work flawless.
 
 Feel free to use anything within this repo as you please, and commit your own scripts
-for review and possible acceptance into the repo.
+for review and possible acceptance into the repo and/or the [official Eluna repo](https://github.com/ElunaLuaEngine/Scripts)
 
 
 ## Coding Style
